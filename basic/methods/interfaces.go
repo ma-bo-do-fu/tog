@@ -1,0 +1,49 @@
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type Abser interface {
+	Abs() float64
+}
+
+func main() {
+	var a Abser
+	f := MyFloat(-math.Sqrt2)
+	v := Vertex{3, 4}
+
+	a = f // a MyFloat implements Abser
+	a = &v // a *Vertex implements Abser
+
+	// In the following line, v is a Vertex (not *Vertex)
+	// and does NOT implement Abser.
+	a = v
+
+	fmt.Println(a.Abs())
+}
+
+type MyFloat float64
+
+func (f MyFloat) Abs() float64 {
+	if f < 0 {
+		return float64(-f)
+	}
+	return float64(f)
+}
+
+type Vertex struct {
+	X, Y float64
+}
+
+func (v *Vertex) Abs() float64 {
+	return math.Sqrt(v.x*v.x + v.y*v.Y)
+}
+/*
+# command-line-arguments
+basic/methods/interfaces.go:22:4: cannot use v (type Vertex) as type Abser in assignment:
+	Vertex does not implement Abser (Abs method has pointer receiver)
+basic/methods/interfaces.go:41:20: v.x undefined (type *Vertex has no field or method x, but does have X)
+basic/methods/interfaces.go:41:30: v.y undefined (type *Vertex has no field or method y, but does have Y)
+ */
